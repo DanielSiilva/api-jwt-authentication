@@ -1,0 +1,13 @@
+version: "3.1"
+
+services:
+  api-rest-node:
+    image: mongo
+    container_name: api-authetication-jwt
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
