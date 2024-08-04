@@ -3,9 +3,11 @@ import User from "../models/userModel";
 import {
   generateAccessToken,
   generateRefreshToken,
+  verifyRefreshToken,
 } from "../utils/generateTokens";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import RefreshToken from "../models/refreshTokenModel";
 
 dotenv.config();
 
@@ -34,5 +36,25 @@ export const getUsers = async (req: Request, res: Response) => {
     res.send(users);
   } catch (error: any) {
     res.status(500).send(error);
+  }
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
+  const { token } = req.body;
+  if (!token) {
+    return res.status(401).send({ error: "Refresh token is required" });
+  }
+
+  try {
+    const decoded = verifyRefreshToken(token);
+    const storedToken = await RefreshToken.findOne({ token });
+    if (!storedToken) {
+      return res.status(401).send({ error: "Invalid refresh token" });
+    }
+
+    const newAccessToken = generateAccessToken((decoded as any).id);
+    res.send({ accessToken: newAccessToken });
+  } catch (error) {
+    res.status(401).send({ error: "Invalid refresh token" });
   }
 };
