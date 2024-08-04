@@ -6,11 +6,11 @@ import {
 } from "../utils/generateTokens";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import exp from "constants";
 
 dotenv.config();
 
-export const resgiter = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response) => {
+  console.log("Entrou no controle register", req.body);
   const { email, password } = req.body;
 
   try {

@@ -1,9 +1,8 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import { register } from "../controller/authController";
 
 const routes = Router();
 
-routes.get("/teste", (req: Request, res: Response) => {
-  res.status(200).send("Hello word");
-});
+routes.post("/register", register);
 
 export default routes;
