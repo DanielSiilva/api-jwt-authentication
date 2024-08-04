@@ -27,3 +27,12 @@ export const register = async (req: Request, res: Response) => {
     res.status(400).send(error);
   }
 };
+
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find({}, "-password");
+    res.send(users);
+  } catch (error: any) {
+    res.status(500).send(error);
+  }
+};
