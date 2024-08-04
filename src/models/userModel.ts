@@ -13,6 +13,10 @@ const UserSchema: Schema<IUser> = new Schema({
 });
 
 // Hook para salvar a senha como uma hash
+// this.isModified("password"): Verifica se a senha foi modificada.
+// bcrypt.genSalt(10): Gera um salt (valor aleatório) para a criptografia.
+// bcrypt.hash(this.password, salt): Criptografa a senha com o salt.
+// next(): Passa para o próximo middleware.
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();

@@ -10,11 +10,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
-  console.log("Entrou no controle register", req.body);
   const { email, password } = req.body;
 
   try {
-    //TODO: implemtar se o user ja existe no banco
+    const userExists = await User.findOne({ email: email });
+
+    if (userExists) {
+      return res.status(409).json({ message: "User already exists" });
+    }
+
     const user = new User({ email, password });
     await user.save();
 
