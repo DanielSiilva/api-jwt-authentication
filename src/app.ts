@@ -2,7 +2,6 @@ import express from "express";
 import routes from "./routes/authRoutes";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import { error } from "console";
 
 dotenv.config();
 

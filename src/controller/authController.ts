@@ -1,31 +1,29 @@
 import { Request, Response } from "express";
 import User from "../models/userModel";
+import RefreshToken from "../models/refreshTokenModel";
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
 } from "../utils/generateTokens";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import RefreshToken from "../models/refreshTokenModel";
-
-dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
   try {
-    const userExists = await User.findOne({ email: email });
-
-    if (userExists) {
-      return res.status(409).json({ message: "User already exists" });
-    }
-
-    const user = new User({ email, password });
+    const user: any = new User({ email, password });
     await user.save();
 
-    res.status(201).send({ message: "User registered successfully" });
-  } catch (error: any) {
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    await new RefreshToken({ token: refreshToken, userId: user._id }).save();
+
+    res.status(201).send({
+      message: "User registered successfully",
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
     res.status(400).send(error);
   }
 };
@@ -34,7 +32,7 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find({}, "-password");
     res.send(users);
-  } catch (error: any) {
+  } catch (error) {
     res.status(500).send(error);
   }
 };

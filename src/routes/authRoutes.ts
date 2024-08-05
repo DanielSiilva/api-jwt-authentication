@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { register } from "../controller/authController";
+import { register, getUsers } from "../controller/authController";
+import authMiddleware from "../middleware/authMiddleware";
 
-const routes = Router();
+const router = Router();
 
-routes.post("/register", register);
+router.post("/register", register);
+router.get("/users", authMiddleware, getUsers);
 
-export default routes;
+export default router;
